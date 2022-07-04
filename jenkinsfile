@@ -1,18 +1,14 @@
 pipeline {
     agent any 
-    node {
-        stage('Example') {
-            if (env.BRANCH_NAME == 'master') {
-                echo 'I only execute on the master branch'
-            } else {
-                echo 'I execute elsewhere'
-            }
-        }
-    }
     stages {
         stage('Stage 1') {
             steps {
                 echo 'Hello world!' 
+                if (env.BRANCH_NAME == 'master') {
+                    echo 'I only execute on the master branch'
+                } else {
+                    echo 'I execute elsewhere'
+                }
             }
         }
         stage('Meh Another stage') {
