@@ -1,37 +1,28 @@
 pipeline {
-    node("myAgent") {
-        timeout(unit: 'SECONDS', time: 5) {
-            stage("One"){
+    agent any 
+    stages {
+        stage('Stage 1') {
+            steps {
+                echo 'Hello world!' 
+            }
+        }
+        stage('Meh Another stage') {
+            steps {
+                echo 'Another step'
+            }
+        }
+        stage('Maven step') {
+            // agent { docker 'maven:3.8.1-adoptopenjdk-11' }
+            steps {
+                echo 'Hello Maven'
+                // sh 'mvn --version'
+            }
+        }
+        stage("One"){
+            steps {
                 sleep 10
                 echo 'hello'
             }
         }
-    }
-}
-    // agent any 
-    // stages {
-    //     stage('Stage 1') {
-    //         steps {
-    //             echo 'Hello world!' 
-    //         }
-    //     }
-    //     stage('Meh Another stage') {
-    //         steps {
-    //             echo 'Another step'
-    //         }
-    //     }
-    //     stage('Maven step') {
-    //         // agent { docker 'maven:3.8.1-adoptopenjdk-11' }
-    //         steps {
-    //             echo 'Hello Maven'
-    //             // sh 'mvn --version'
-    //         }
-    //     }
-    //     stage("One"){
-    //         steps {
-    //             sleep 10
-    //             echo 'hello'
-    //         }
-    //     }
         
-    // }
+    }
