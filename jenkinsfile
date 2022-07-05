@@ -199,6 +199,7 @@ pipeline {
         steps {
           script {
             /* Insert your code here */
+            echo 'Deploy script'
           }
           echo 'Deploy'
         }
@@ -208,6 +209,7 @@ pipeline {
         agent {
           dockerfile {
             /* Insert your code here */
+            echo 'Docker File'
           }
         }
         steps {
