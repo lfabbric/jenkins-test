@@ -95,6 +95,7 @@ pipeline {
               script{
                 /* Insert your code here */  
                 echo 'Linting'
+                bat "set"
               }
             }
           }
