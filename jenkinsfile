@@ -207,11 +207,11 @@ pipeline {
       // }
 
       stage('E2E Testing') {
-        agent {
-          dockerfile {
-            /* Insert your code here */
-          }
-        }
+        // agent {
+        //   dockerfile {
+        //     /* Insert your code here */
+        //   }
+        // }
         steps {
           script {
             echo 'jslPublishTestResults(tests_reports/*xml)'
