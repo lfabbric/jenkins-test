@@ -109,20 +109,20 @@ pipeline {
       //   }
       // }
 
-      stage('Build') {
-        agent {
-          dockerfile {
-                /* Insert your code here */
-          }
-        }
-        steps {
-          script {
-            /* Insert your code here */
-            /* jslMavenWrapper('-s ./settings.xml -X clean install') */
-            echo 'Build'
-          }
-        }
-      }
+      // stage('Build') {
+      //   agent {
+      //     dockerfile {
+      //           /* Insert your code here */
+      //     }
+      //   }
+      //   steps {
+      //     script {
+      //       /* Insert your code here */
+      //       /* jslMavenWrapper('-s ./settings.xml -X clean install') */
+      //       echo 'Build'
+      //     }
+      //   }
+      // }
 
       // stage('Create Images') {
       //   steps {
@@ -196,15 +196,15 @@ pipeline {
       //   }
       // }
 
-      stage('Deploy') {
-        steps {
-          script {
-            /* Insert your code here */
-            echo 'Deploy script'
-          }
-          echo 'Deploy'
-        }
-      }
+      // stage('Deploy') {
+      //   steps {
+      //     script {
+      //       /* Insert your code here */
+      //       echo 'Deploy script'
+      //     }
+      //     echo 'Deploy'
+      //   }
+      // }
 
       stage('E2E Testing') {
         agent {
