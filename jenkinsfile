@@ -145,17 +145,17 @@ pipeline {
         parallel {
           stage('SMX') {
             stages {
-              stage("Build"){
+              stage("Build SMX"){
                 steps {
                   echo 'Build SMX Docker Container'
                 }
               }
-              stage("Test"){
+              stage("Test SMX"){
                 steps {
                   echo 'Testing SMX Docker Container'
                 }
               }
-              stage("Deploy"){
+              stage("Deploy SMX"){
                 steps {
                   echo 'Deploying SMX Docker Container'
                 }
@@ -164,17 +164,17 @@ pipeline {
           }
           stage('GUI') {
             stages {
-              stage("Build"){
+              stage("Build GUI"){
                 steps {
                   echo 'Build GUI Docker Container'
                 }
               }
-              stage("Test"){
+              stage("Test GUI"){
                 steps {
                   echo 'Testing GUI Docker Container'
                 }
               }
-              stage("Deploy"){
+              stage("Deploy GUI"){
                 steps {
                   echo 'Deploying GUI Docker Container'
                 }
@@ -183,17 +183,17 @@ pipeline {
           }
           stage('LOGIN') {
             stages {
-              stage("Build"){
+              stage("Build LOGIN"){
                 steps {
                   echo 'Build LOGIN Docker Container'
                 }
               }
-              stage("Test"){
+              stage("Test LOGIN"){
                 steps {
                   echo 'Testing LOGIN Docker Container'
                 }
               }
-              stage("Deploy"){
+              stage("Deploy LOGIN"){
                 steps {
                   echo 'Deploying LOGIN Docker Container'
                 }
