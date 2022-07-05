@@ -85,27 +85,12 @@ pipeline {
 
       stage('Static Code Analysis') {
         parallel {
-          stage('Linting') {
-            // agent {
-            //   dockerfile {
-            //     /* Insert your code here */  
-            //   }
-            // }
-            steps {
-              script{
-                /* Insert your code here */  
-                echo 'Linting'
-                sh 'printenv'
-              }
-            }
+          node('Linting') {
+            echo 'Linting'
+            sh 'printenv'
           }
-          stage('DevSecOps'){
-            steps {
-              script {
-                /* Contract Validation Gate */
-                echo 'jslGitHubSecurityAlert()'
-              }
-            }
+          node('DevSecOps'){
+            echo 'jslGitHubSecurityAlert()'
           }
         }
       }
