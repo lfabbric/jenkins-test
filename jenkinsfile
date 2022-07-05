@@ -211,17 +211,17 @@ pipeline {
           stages {
             stage("Build"){
               steps {
-                echo 'Build ${DOCKERNAME} Docker Container'
+                echo "Build ${DOCKERNAME} Docker Container"
               }
             }
             stage("Test"){
               steps {
-                echo 'Testing ${DOCKERNAME} Docker Container'
+                echo "Testing ${DOCKERNAME} Docker Container"
               }
             }
             stage("Deploy"){
               steps {
-                echo 'Deploying ${DOCKERNAME} Docker Container'
+                echo "Deploying ${DOCKERNAME} Docker Container"
               }
             }
           }
