@@ -1,37 +1,274 @@
+// try {
+//   library(
+//     identifier: 'jsl-jenkins-shared-library-local@release/20210415',
+//     retriever: modernSCM(
+//       [
+//         $class: 'GitSCMSource',
+//         remote: "/app/jenkins/git/jsl-jenkins-shared-library.git",
+//         extensions: [[$class: 'WipeWorkspace']]
+//       ]
+//     )
+//   ) _
+// } catch (Exception Ex) {
+//   library(
+//     identifier: 'jsl-jenkins-shared-library@release/20210415',
+//     retriever: modernSCM(
+//       [
+//         $class: 'GitSCMSource',
+//         remote: "git@github.com:CenturyLink/jsl-jenkins-shared-library.git",
+//         credentialsId: 'SCMAUTO_SSH_DEVOPS_PIPELINE',
+//         extensions: [[$class: 'WipeWorkspace']]
+//       ]
+//     )
+//   ) _
+// }
+
 pipeline {
-    agent any 
+  environment {
+    GITHUB_TOKEN_CREDENTIALS = ''
+    GITHUB_SSH_CREDENTIALS = ''
+    DOCKER_CREDENTIALS = ''
+    KUBE_CREDENTIALS = ''
+    KUBE_CREDENTIALS_TEST = ''
+    AMAZON_CREDENTIALS = ''
+    SONARQUBE_CREDENTIALS = ''
+    QUALITY_GATE_CREDENTIALS = ''
+    GCP_CREDENTIALS = ''
+    JIRA_CREDENTIALS = ''
+    MSTEAMS_CREDENTIALS = ''
+
+    // Custom project variables
+    BRANCH_NAME = GIT_BRANCH.split('/')[-1].trim().toLowerCase()
+    COMMIT_ID = GIT_COMMIT.substring(0,7).trim().toLowerCase()
+    PULL_REQUEST="pr-${env.CHANGE_ID}"
+    PROJECT_NAME = 'PROJECT'
+    DOCKER_REPO ='PROJECT_REPO'
+    IMAGE_NAME = "${env.PROJECT_NAME}"
+    IMAGE_TAG =  "${env.PULL_REQUEST}"
+    KUBE_DOCKER_SECRET_NAME = "${env.PROJECT_NAME}-${env.PULL_REQUEST}"
+    KUBE_DOCKER_SECRET_NAME_TEST = "${env.PROJECT_NAME}-${env.BRANCH_NAME}"
+  }
+
+    /*parameters {
+      //      https://www.jenkins.io/doc/book/pipeline/syntax/#parameters
+
+    }*/
+
+    /*
+    https://www.jenkins.io/doc/book/pipeline/syntax/#agent
+    Add agent sections in stages/stage if needed.
+    */
+    agent {
+      label 'Docker-enabled'
+    }
+
+    options {
+      /*
+      https://www.jenkins.io/doc/book/pipeline/syntax/#options
+      */
+      timestamps ()
+      timeout(time: 1, unit: 'HOURS')
+      buildDiscarder(logRotator(numToKeepStr:'10', daysToKeepStr: '30'))
+      disableConcurrentBuilds()
+    }
+
+    /*
+    https://www.jenkins.io/doc/book/pipeline/syntax/#triggers
+    */
+    triggers {
+      pollSCM('*/5 * * * *')
+      issueCommentTrigger('.*test this please.*')
+    }
+
     stages {
-        stage('Stage 1') {
-            steps {
-                echo 'Hello world!' 
-                echo env.BRANCH_NAME
-                script {
-                    if (env.BRANCH_NAME == 'main') {
-                        echo 'I only execute on the master branch'
-                    } else {
-                        echo 'I execute elsewhere'
-                    }
-                }
+
+      stage('Static Code Analysis') {
+        parallel {
+          stage('Linting') {
+            agent {
+              dockerfile {
+                /* Insert your code here */  
+              }
             }
-        }
-        stage('Meh Another stage') {
             steps {
-                echo 'Another step'
+              script{
+                /* Insert your code here */  
+                echo 'Linting'
+              }
             }
-        }
-        stage('Maven step') {
-            // agent { docker 'maven:3.8.1-adoptopenjdk-11' }
+          }
+          stage('DevSecOps'){
             steps {
-                echo 'Hello Maven'
-                // sh 'mvn --version'
+              script {
+                /* Contract Validation Gate */
+                echo 'jslGitHubSecurityAlert()'
+              }
             }
+          }
         }
-        stage("One"){
+      }
+
+      stage('Build') {
+        agent {
+          dockerfile {
+                /* Insert your code here */
+          }
+        }
+        steps {
+          script {
+            /* Insert your code here */
+            /* jslMavenWrapper('-s ./settings.xml -X clean install') */
+            echo 'Build'
+          }
+        }
+      }
+
+      stage('Create Images') {
+        steps {
+          script {
+            /* Insert your code here */
+            echo 'Create Images'
+          }
+        }
+      }
+
+      stage('Test') {
+        stages {
+
+          stage('Unit Tests') {
+            agent {
+              dockerfile {
+                /* Insert your code here */
+              }
+            }
             steps {
-                sleep 10
-                echo 'hello'
+              script {
+                /* Insert your code here */
+              }
+              echo 'Unit Tests'
             }
+          }
+
+          stage('Coverage'){
+            agent {
+              dockerfile {
+                /* Insert your code here */
+              }
+            }
+            steps {
+              script {
+                /* Contract Validation Gate */
+                echo 'jslQualityGateCodeCoverage(./cicd/docker/SonarQube/sonar-project.properties)'
+              }
+            }
+          }
+
+          stage('Sonarqube'){
+            agent {
+              dockerfile {
+                /* Insert your code here */
+              }
+            }
+            steps {
+              script {
+                /* Insert your code here */
+
+                /* Contract Validation Gate */
+                // jslSonarQubeStaticAnalysis('./cicd/docker/SonarQube/sonar-project.properties', env.SONARQUBE_CREDENTIALS)
+                echo 'jslSonarQubeStaticAnaylysis()'
+              }
+            }
+          }
+          stage('Quality Gate'){
+            agent {
+              dockerfile {
+                /* Insert your code here */
+              }
+            }
+            steps {
+              script {
+                /* Contract Validation Gate */
+                echo 'jslQualityGate()'
+              }
+            }
+          }
         }
-        
+      }
+
+      stage('Deploy') {
+        steps {
+          script {
+            /* Insert your code here */
+          }
+          echo 'Deploy'
+        }
+      }
+
+      stage('E2E Testing') {
+        agent {
+          dockerfile {
+            /* Insert your code here */
+          }
+        }
+        steps {
+          script {
+            echo 'jslPublishTestResults(tests_reports/*xml)'
+          }
+        }
+      }
+    }
+    post {
+      success {
+        /* Contract Validation Gate */
+        echo 'jslNotification(success)'
+        echo 'cleanWs()'
+      }
+      failure {
+        /* Contract Validation Gate */
+        echo 'jslNotification(failure)'
+        echo 'cleanWs()'
+      }
+      always {
+        echo 'cleanWs()'
+      }
     }
 }
+
+
+// pipeline {
+//     agent any 
+//     stages {
+//         stage('Stage 1') {
+//             steps {
+//                 echo 'Hello world!' 
+//                 echo env.BRANCH_NAME
+//                 script {
+//                     if (env.BRANCH_NAME == 'main') {
+//                         echo 'I only execute on the master branch'
+//                     } else {
+//                         echo 'I execute elsewhere'
+//                     }
+//                 }
+//             }
+//         }
+//         stage('Meh Another stage') {
+//             steps {
+//                 echo 'Another step'
+//             }
+//         }
+//         stage('Maven step') {
+//             // agent { docker 'maven:3.8.1-adoptopenjdk-11' }
+//             steps {
+//                 echo 'Hello Maven'
+//                 // sh 'mvn --version'
+//             }
+//         }
+//         stage("One"){
+//             steps {
+//                 sleep 10
+//                 echo 'hello'
+//             }
+//         }
+        
+//     }
+// }
