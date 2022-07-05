@@ -63,15 +63,15 @@ pipeline {
     // }
     agent any
 
-    // options {
-    //   /*
-    //   https://www.jenkins.io/doc/book/pipeline/syntax/#options
-    //   */
-    //   timestamps ()
-    //   timeout(time: 1, unit: 'HOURS')
-    //   buildDiscarder(logRotator(numToKeepStr:'10', daysToKeepStr: '30'))
-    //   disableConcurrentBuilds()
-    // }
+    options {
+      /*
+      https://www.jenkins.io/doc/book/pipeline/syntax/#options
+      */
+      timestamps ()
+      timeout(time: 1, unit: 'HOURS')
+      buildDiscarder(logRotator(numToKeepStr:'10', daysToKeepStr: '30'))
+      disableConcurrentBuilds()
+    }
 
     /*
     https://www.jenkins.io/doc/book/pipeline/syntax/#triggers
