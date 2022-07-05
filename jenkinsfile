@@ -53,8 +53,8 @@ pipeline {
       //      https://www.jenkins.io/doc/book/pipeline/syntax/#parameters
 
     }*/
-      parameters {
-        booleanParam(name: "DOCKERBUILD", defaultValue: false)
+    parameters {
+        booleanParam(name: "isBuildDockerContainers", defaultValue: false)
     }
 
     /*
@@ -138,7 +138,7 @@ pipeline {
 
       stage('Build Docker Images') {
         when {
-          expression { params.DOCKERBUILD }
+          expression { params.isBuildDockerContainers }
         }
         // keep in mind, I think when we deploy, we want to put the project version number
         matrix {
