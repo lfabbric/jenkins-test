@@ -85,12 +85,27 @@ pipeline {
 
       stage('Static Code Analysis') {
         parallel {
-          node('Linting') {
-            echo 'Linting'
-            sh 'printenv'
+          stage('Linting') {
+            // agent {
+            //   dockerfile {
+            //     /* Insert your code here */  
+            //   }
+            // }
+            steps {
+              script{
+                /* Insert your code here */  
+                echo 'Linting'
+                sh 'printenv'
+              }
+            }
           }
-          node('DevSecOps'){
-            echo 'jslGitHubSecurityAlert()'
+          stage('DevSecOps'){
+            steps {
+              script {
+                /* Contract Validation Gate */
+                echo 'jslGitHubSecurityAlert()'
+              }
+            }
           }
         }
       }
@@ -127,61 +142,89 @@ pipeline {
         // app.inside {
         //     sh 'echo "Tests passed"'
         // }
-        parallel {
-          stage('SMX') {
-            stages {
-              stage("Build SMX"){
-                steps {
-                  echo 'Build SMX Docker Container'
-                }
-              }
-              stage("Test SMX"){
-                steps {
-                  echo 'Testing SMX Docker Container'
-                }
-              }
-              stage("Deploy SMX"){
-                steps {
-                  echo 'Deploying SMX Docker Container'
-                }
-              }
+        // parallel {
+        //   stage('SMX') {
+        //     stages {
+        //       stage("Build SMX"){
+        //         steps {
+        //           echo 'Build SMX Docker Container'
+        //         }
+        //       }
+        //       stage("Test SMX"){
+        //         steps {
+        //           echo 'Testing SMX Docker Container'
+        //         }
+        //       }
+        //       stage("Deploy SMX"){
+        //         steps {
+        //           echo 'Deploying SMX Docker Container'
+        //         }
+        //       }
+        //     }
+        //   }
+        //   stage('GUI') {
+        //     stages {
+        //       stage("Build GUI"){
+        //         steps {
+        //           echo 'Build GUI Docker Container'
+        //         }
+        //       }
+        //       stage("Test GUI"){
+        //         steps {
+        //           echo 'Testing GUI Docker Container'
+        //         }
+        //       }
+        //       stage("Deploy GUI"){
+        //         steps {
+        //           echo 'Deploying GUI Docker Container'
+        //         }
+        //       }
+        //     }
+        //   }
+        //   stage('LOGIN') {
+        //     stages {
+        //       stage("Build LOGIN"){
+        //         steps {
+        //           echo 'Build LOGIN Docker Container'
+        //         }
+        //       }
+        //       stage("Test LOGIN"){
+        //         steps {
+        //           echo 'Testing LOGIN Docker Container'
+        //         }
+        //       }
+        //       stage("Deploy LOGIN"){
+        //         steps {
+        //           echo 'Deploying LOGIN Docker Container'
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
+        matrix {
+          axes {
+            axis {
+              name 'DOCKERNAME'
+              values 'SMX', 'LOGIN', 'GUI'
             }
           }
-          stage('GUI') {
-            stages {
-              stage("Build GUI"){
-                steps {
-                  echo 'Build GUI Docker Container'
-                }
-              }
-              stage("Test GUI"){
-                steps {
-                  echo 'Testing GUI Docker Container'
-                }
-              }
-              stage("Deploy GUI"){
-                steps {
-                  echo 'Deploying GUI Docker Container'
-                }
+          agent {
+            label "${DOCKERNAME}-agent"
+          }
+          stages {
+            stage("Build ${DOCKERNAME}"){
+              steps {
+                echo 'Build ${DOCKERNAME} Docker Container'
               }
             }
-          }
-          stage('LOGIN') {
-            stages {
-              stage("Build LOGIN"){
-                steps {
-                  echo 'Build LOGIN Docker Container'
-                }
+            stage("Test ${DOCKERNAME}"){
+              steps {
+                echo 'Testing ${DOCKERNAME} Docker Container'
               }
-              stage("Test LOGIN"){
-                steps {
-                  echo 'Testing LOGIN Docker Container'
-                }
-              }
-              stage("Deploy LOGIN"){
-                steps {
-                  echo 'Deploying LOGIN Docker Container'
-                }
+            }
+            stage("Deploy ${DOCKERNAME}"){
+              steps {
+                echo 'Deploying ${DOCKERNAME} Docker Container'
               }
             }
           }
