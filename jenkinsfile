@@ -208,9 +208,6 @@ pipeline {
               values 'SMX', 'LOGIN', 'GUI'
             }
           }
-          agent {
-            label "${DOCKERNAME}-agent"
-          }
           stages {
             stage("Build"){
               steps {
