@@ -77,7 +77,7 @@ pipeline {
     */
     triggers {
       pollSCM('*/5 * * * *')
-      issueCommentTrigger('.*test this please.*')
+      echo 'issueCommentTrigger(.*test this please.*)'
     }
 
     stages {
@@ -209,7 +209,6 @@ pipeline {
         agent {
           dockerfile {
             /* Insert your code here */
-            echo 'Docker File'
           }
         }
         steps {
