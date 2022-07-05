@@ -83,46 +83,46 @@ pipeline {
 
     stages {
 
-      // stage('Static Code Analysis') {
-      //   parallel {
-      //     stage('Linting') {
-      //       agent {
-      //         dockerfile {
-      //           /* Insert your code here */  
-      //         }
-      //       }
-      //       steps {
-      //         script{
-      //           /* Insert your code here */  
-      //           echo 'Linting'
-      //         }
-      //       }
-      //     }
-      //     stage('DevSecOps'){
-      //       steps {
-      //         script {
-      //           /* Contract Validation Gate */
-      //           echo 'jslGitHubSecurityAlert()'
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
+      stage('Static Code Analysis') {
+        parallel {
+          stage('Linting') {
+            // agent {
+            //   dockerfile {
+            //     /* Insert your code here */  
+            //   }
+            // }
+            steps {
+              script{
+                /* Insert your code here */  
+                echo 'Linting'
+              }
+            }
+          }
+          stage('DevSecOps'){
+            steps {
+              script {
+                /* Contract Validation Gate */
+                echo 'jslGitHubSecurityAlert()'
+              }
+            }
+          }
+        }
+      }
 
-      // stage('Build') {
-      //   agent {
-      //     dockerfile {
-      //           /* Insert your code here */
-      //     }
-      //   }
-      //   steps {
-      //     script {
-      //       /* Insert your code here */
-      //       /* jslMavenWrapper('-s ./settings.xml -X clean install') */
-      //       echo 'Build'
-      //     }
-      //   }
-      // }
+      stage('Build') {
+        // agent {
+        //   dockerfile {
+        //         /* Insert your code here */
+        //   }
+        // }
+        steps {
+          script {
+            /* Insert your code here */
+            /* jslMavenWrapper('-s ./settings.xml -X clean install') */
+            echo 'Build'
+          }
+        }
+      }
 
       stage('Create Images') {
         steps {
