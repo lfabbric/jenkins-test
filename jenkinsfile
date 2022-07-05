@@ -76,10 +76,10 @@ pipeline {
     /*
     https://www.jenkins.io/doc/book/pipeline/syntax/#triggers
     */
-    triggers {
-      pollSCM('*/5 * * * *')
-      // echo 'issueCommentTrigger(.*test this please.*)'
-    }
+    // triggers {
+    //   pollSCM('*/5 * * * *')
+    //   // echo 'issueCommentTrigger(.*test this please.*)'
+    // }
 
     stages {
 
