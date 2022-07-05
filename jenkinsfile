@@ -63,15 +63,15 @@ pipeline {
     // }
     agent any
 
-    options {
-      /*
-      https://www.jenkins.io/doc/book/pipeline/syntax/#options
-      */
-      timestamps ()
-      timeout(time: 1, unit: 'HOURS')
-      buildDiscarder(logRotator(numToKeepStr:'10', daysToKeepStr: '30'))
-      disableConcurrentBuilds()
-    }
+    // options {
+    //   /*
+    //   https://www.jenkins.io/doc/book/pipeline/syntax/#options
+    //   */
+    //   timestamps ()
+    //   timeout(time: 1, unit: 'HOURS')
+    //   buildDiscarder(logRotator(numToKeepStr:'10', daysToKeepStr: '30'))
+    //   disableConcurrentBuilds()
+    // }
 
     /*
     https://www.jenkins.io/doc/book/pipeline/syntax/#triggers
@@ -83,31 +83,31 @@ pipeline {
 
     stages {
 
-      stage('Static Code Analysis') {
-        parallel {
-          stage('Linting') {
-            agent {
-              dockerfile {
-                /* Insert your code here */  
-              }
-            }
-            steps {
-              script{
-                /* Insert your code here */  
-                echo 'Linting'
-              }
-            }
-          }
-          stage('DevSecOps'){
-            steps {
-              script {
-                /* Contract Validation Gate */
-                echo 'jslGitHubSecurityAlert()'
-              }
-            }
-          }
-        }
-      }
+      // stage('Static Code Analysis') {
+      //   parallel {
+      //     stage('Linting') {
+      //       agent {
+      //         dockerfile {
+      //           /* Insert your code here */  
+      //         }
+      //       }
+      //       steps {
+      //         script{
+      //           /* Insert your code here */  
+      //           echo 'Linting'
+      //         }
+      //       }
+      //     }
+      //     stage('DevSecOps'){
+      //       steps {
+      //         script {
+      //           /* Contract Validation Gate */
+      //           echo 'jslGitHubSecurityAlert()'
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
 
       stage('Build') {
         agent {
@@ -124,77 +124,77 @@ pipeline {
         }
       }
 
-      stage('Create Images') {
-        steps {
-          script {
-            /* Insert your code here */
-            echo 'Create Images'
-          }
-        }
-      }
+      // stage('Create Images') {
+      //   steps {
+      //     script {
+      //       /* Insert your code here */
+      //       echo 'Create Images'
+      //     }
+      //   }
+      // }
 
-      stage('Test') {
-        stages {
+      // stage('Test') {
+      //   stages {
 
-          stage('Unit Tests') {
-            agent {
-              dockerfile {
-                /* Insert your code here */
-              }
-            }
-            steps {
-              script {
-                /* Insert your code here */
-                echo 'Unit Tests'
-              }
-            }
-          }
+      //     stage('Unit Tests') {
+      //       agent {
+      //         dockerfile {
+      //           /* Insert your code here */
+      //         }
+      //       }
+      //       steps {
+      //         script {
+      //           /* Insert your code here */
+      //           echo 'Unit Tests'
+      //         }
+      //       }
+      //     }
 
-          stage('Coverage'){
-            agent {
-              dockerfile {
-                /* Insert your code here */
-              }
-            }
-            steps {
-              script {
-                /* Contract Validation Gate */
-                echo 'jslQualityGateCodeCoverage(./cicd/docker/SonarQube/sonar-project.properties)'
-              }
-            }
-          }
+      //     stage('Coverage'){
+      //       agent {
+      //         dockerfile {
+      //           /* Insert your code here */
+      //         }
+      //       }
+      //       steps {
+      //         script {
+      //           /* Contract Validation Gate */
+      //           echo 'jslQualityGateCodeCoverage(./cicd/docker/SonarQube/sonar-project.properties)'
+      //         }
+      //       }
+      //     }
 
-          stage('Sonarqube'){
-            agent {
-              dockerfile {
-                /* Insert your code here */
-              }
-            }
-            steps {
-              script {
-                /* Insert your code here */
+      //     stage('Sonarqube'){
+      //       agent {
+      //         dockerfile {
+      //           /* Insert your code here */
+      //         }
+      //       }
+      //       steps {
+      //         script {
+      //           /* Insert your code here */
 
-                /* Contract Validation Gate */
-                // jslSonarQubeStaticAnalysis('./cicd/docker/SonarQube/sonar-project.properties', env.SONARQUBE_CREDENTIALS)
-                echo 'jslSonarQubeStaticAnaylysis()'
-              }
-            }
-          }
-          stage('Quality Gate'){
-            agent {
-              dockerfile {
-                /* Insert your code here */
-              }
-            }
-            steps {
-              script {
-                /* Contract Validation Gate */
-                echo 'jslQualityGate()'
-              }
-            }
-          }
-        }
-      }
+      //           /* Contract Validation Gate */
+      //           // jslSonarQubeStaticAnalysis('./cicd/docker/SonarQube/sonar-project.properties', env.SONARQUBE_CREDENTIALS)
+      //           echo 'jslSonarQubeStaticAnaylysis()'
+      //         }
+      //       }
+      //     }
+      //     stage('Quality Gate'){
+      //       agent {
+      //         dockerfile {
+      //           /* Insert your code here */
+      //         }
+      //       }
+      //       steps {
+      //         script {
+      //           /* Contract Validation Gate */
+      //           echo 'jslQualityGate()'
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
 
       stage('Deploy') {
         steps {
@@ -219,6 +219,7 @@ pipeline {
         }
       }
     }
+
     post {
       success {
         /* Contract Validation Gate */
