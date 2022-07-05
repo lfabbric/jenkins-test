@@ -53,6 +53,9 @@ pipeline {
       //      https://www.jenkins.io/doc/book/pipeline/syntax/#parameters
 
     }*/
+      parameters {
+        booleanParam(name: "DOCKERBUILD", defaultValue: false)
+    }
 
     /*
     https://www.jenkins.io/doc/book/pipeline/syntax/#agent
@@ -135,8 +138,9 @@ pipeline {
 
       stage('Build Docker Images') {
         when {
-          expression { false }
+          expression { params.DOCKERBUILD }
         }
+        // keep in mind, I think when we deploy, we want to put the project version number
         matrix {
           axes {
             axis {
