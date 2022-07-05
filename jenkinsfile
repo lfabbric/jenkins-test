@@ -212,17 +212,17 @@ pipeline {
             label "${DOCKERNAME}-agent"
           }
           stages {
-            stage("Build ${DOCKERNAME}"){
+            stage("Build"){
               steps {
                 echo 'Build ${DOCKERNAME} Docker Container'
               }
             }
-            stage("Test ${DOCKERNAME}"){
+            stage("Test"){
               steps {
                 echo 'Testing ${DOCKERNAME} Docker Container'
               }
             }
-            stage("Deploy ${DOCKERNAME}"){
+            stage("Deploy"){
               steps {
                 echo 'Deploying ${DOCKERNAME} Docker Container'
               }
