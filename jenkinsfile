@@ -153,6 +153,7 @@ pipeline {
             app.push("latest")
           }
         */
+        def app
         matrix {
           axes {
             axis {
@@ -160,8 +161,7 @@ pipeline {
               values 'SMX', 'LOGIN', 'GUI'
             }
           }
-          node {
-            def app
+          stages {
             stage("Build"){
               steps {
                 echo "Build ${DOCKERNAME} Docker Container"
