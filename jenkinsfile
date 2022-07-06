@@ -175,11 +175,10 @@ pipeline {
               steps {
                 script {
                   FOO = "TEST_SET_${DOCKERNAME}"
+                  docker.build("environment/${DOCKERNAME}")
                 }
                 echo "Build ${DOCKERNAME} Docker Container"
                 echo "${FOO}"
-
-                docker.build("environment/${DOCKERNAME}")
               }
             }
             stage("Test"){
