@@ -175,7 +175,7 @@ pipeline {
               steps {
                 script {
                   FOO = "TEST_SET_${DOCKERNAME}"
-                  docker.build("environment/${DOCKERNAME}")
+                  def testImage = docker.build("test-image", "./dockerfiles/${DOCKERNAME}")
                 }
                 echo "Build ${DOCKERNAME} Docker Container"
                 echo "${FOO}"
