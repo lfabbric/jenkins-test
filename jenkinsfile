@@ -141,6 +141,18 @@ pipeline {
           expression { params.isBuildDockerContainers }
         }
         // keep in mind, I think when we deploy, we want to put the project version number
+        /*
+          def app
+          app = docker.build("releaseworks/hellonode")
+          app.inside {
+            sh 'echo "Tests passed"'
+          }
+
+          docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
+          }
+        */
         matrix {
           axes {
             axis {
@@ -149,6 +161,7 @@ pipeline {
             }
           }
           stages {
+            def app
             stage("Build"){
               steps {
                 echo "Build ${DOCKERNAME} Docker Container"
@@ -162,6 +175,7 @@ pipeline {
             stage("Deploy"){
               steps {
                 echo "Deploying ${DOCKERNAME} Docker Container"
+
               }
             }
           }
