@@ -167,26 +167,33 @@ pipeline {
               values 'SMX', 'LOGIN', 'GUI'
             }
           }
+          environment {
+            FOO2 = ""
+          }
           stages {
             stage("Build"){
               steps {
                 script {
                   FOO = "bar_${DOCKERNAME}"
+                  env.FOO2 = "bar_${DOCKERNAME}"
                 }
                 echo "Build ${DOCKERNAME} Docker Container"
                 echo "${FOO}"
+                echo "${env.FOO2}"
               }
             }
             stage("Test"){
               steps {
                 echo "Testing ${DOCKERNAME} Docker Container"
                 echo "${FOO}"
+                echo "${env.FOO2}"
               }
             }
             stage("Deploy"){
               steps {
                 echo "Deploying ${DOCKERNAME} Docker Container"
                 echo "${FOO}"
+                echo "${env.FOO2}"
               }
             }
           }
