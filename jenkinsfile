@@ -155,7 +155,7 @@ pipeline {
         */
         matrix {
           environment {
-            def FOO
+            def FOO = ""
           }
           axes {
             axis {
