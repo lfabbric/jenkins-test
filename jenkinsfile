@@ -23,8 +23,6 @@
 //   ) _
 // }
 
-def FOO = "test"
-
 pipeline {
   environment {
     GITHUB_TOKEN_CREDENTIALS = ''
@@ -102,6 +100,7 @@ pipeline {
                 /* Insert your code here */  
                 echo 'Linting'
                 sh 'printenv'
+                sh 'ls -la'
               }
             }
           }
@@ -139,10 +138,6 @@ pipeline {
         }
       }
 
-      stage('Build Docker Images') {
-        when {
-          expression { params.isBuildDockerContainers }
-        }
         // keep in mind, I think when we deploy, we want to put the project version number
         /*
           def app
@@ -156,6 +151,11 @@ pipeline {
             app.push("latest")
           }
         */
+
+      stage('Build Docker Images') {
+        when {
+          expression { params.isBuildDockerContainers }
+        }
         matrix {
           when { anyOf {
             expression { params.DOCKERNAME_FILTER == 'all' }
@@ -168,32 +168,30 @@ pipeline {
             }
           }
           environment {
-            FOO2 = ""
+            FOO = ""
           }
           stages {
             stage("Build"){
               steps {
                 script {
-                  FOO = "bar_${DOCKERNAME}"
-                  env.FOO2 = "bar_${DOCKERNAME}"
+                  FOO = "TEST_SET_${DOCKERNAME}"
                 }
                 echo "Build ${DOCKERNAME} Docker Container"
                 echo "${FOO}"
-                echo "${env.FOO2}"
+
+                docker.build("environment/${DOCKERNAME}")
               }
             }
             stage("Test"){
               steps {
                 echo "Testing ${DOCKERNAME} Docker Container"
                 echo "${FOO}"
-                echo "${env.FOO2}"
               }
             }
             stage("Deploy"){
               steps {
                 echo "Deploying ${DOCKERNAME} Docker Container"
                 echo "${FOO}"
-                echo "${env.FOO2}"
               }
             }
           }
