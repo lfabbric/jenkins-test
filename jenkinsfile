@@ -153,13 +153,15 @@ pipeline {
             app.push("latest")
           }
         */
-        def app
         matrix {
           axes {
             axis {
               name 'DOCKERNAME'
               values 'SMX', 'LOGIN', 'GUI'
             }
+          }
+          script {
+            def app
           }
           stages {
             stage("Build"){
