@@ -23,6 +23,8 @@
 //   ) _
 // }
 
+def FOO = "test"
+
 pipeline {
   environment {
     GITHUB_TOKEN_CREDENTIALS = ''
@@ -55,6 +57,7 @@ pipeline {
     }*/
     parameters {
         booleanParam(name: "isBuildDockerContainers", defaultValue: false)
+        choice(name: 'DOCKERNAME_FILTER', choices: ['all', 'SMX', 'LOGIN', 'GUI'], description: 'Build specific containers')
     }
 
     /*
@@ -154,9 +157,10 @@ pipeline {
           }
         */
         matrix {
-          environment {
-            def FOO = ""
-          }
+          when { anyOf {
+            expression { params.DOCKERNAME_FILTER == 'all' }
+            expression { params.DOCKERNAME_FILTER == env.DOCKERNAME }
+          }}
           axes {
             axis {
               name 'DOCKERNAME'
@@ -167,22 +171,22 @@ pipeline {
             stage("Build"){
               steps {
                 script {
-                  env.FOO = "bar2"
+                  FOO = "bar_${DOCKERNAME}"
                 }
                 echo "Build ${DOCKERNAME} Docker Container"
-                echo "${env.FOO}"
+                echo "${FOO}"
               }
             }
             stage("Test"){
               steps {
                 echo "Testing ${DOCKERNAME} Docker Container"
-                echo "${env.FOO}"
+                echo "${FOO}"
               }
             }
             stage("Deploy"){
               steps {
                 echo "Deploying ${DOCKERNAME} Docker Container"
-                echo "${env.FOO}"
+                echo "${FOO}"
               }
             }
           }
