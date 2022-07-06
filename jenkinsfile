@@ -154,6 +154,9 @@ pipeline {
           }
         */
         matrix {
+          environment {
+            FOO = "bar"
+          }
           axes {
             axis {
               name 'DOCKERNAME'
@@ -165,23 +168,26 @@ pipeline {
           //   def app
           // }
           stages {
-            script {
-              def app
-            }
+            // Cant put script here
+            // script {
+            //   def app
+            // }
             stage("Build"){
               steps {
                 echo "Build ${DOCKERNAME} Docker Container"
+                echo "${env.FOO}"
               }
             }
             stage("Test"){
               steps {
                 echo "Testing ${DOCKERNAME} Docker Container"
+                echo "${env.FOO}"
               }
             }
             stage("Deploy"){
               steps {
                 echo "Deploying ${DOCKERNAME} Docker Container"
-
+                echo "${env.FOO}"
               }
             }
           }
