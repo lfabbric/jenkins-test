@@ -1,13 +1,5 @@
-FROM node:alpine
+FROM alpine:3.4
 
-WORKDIR /app
-
-EXPOSE 3002
-
-# COPY package.json package-lock.json ./
-
-RUN npm install 
-
-#COPY . ./
-
-CMD ["npm", "start"]
+RUN apk update
+RUN apk add vim
+RUN apk add curl
