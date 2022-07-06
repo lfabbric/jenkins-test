@@ -166,7 +166,9 @@ pipeline {
           stages {
             stage("Build"){
               steps {
-                env.FOO = "bar2"
+                script {
+                  env.FOO = "bar2"
+                }
                 echo "Build ${DOCKERNAME} Docker Container"
                 echo "${env.FOO}"
               }
