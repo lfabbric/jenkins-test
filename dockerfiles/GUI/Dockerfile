@@ -4,10 +4,10 @@ WORKDIR /app
 
 EXPOSE 3001
 
-COPY package.json package-lock.json ./
+# COPY package.json package-lock.json ./
 
 RUN npm install 
 
-COPY . ./
+# COPY . ./
 
 CMD ["npm", "start"]
