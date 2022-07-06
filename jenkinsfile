@@ -160,7 +160,7 @@ pipeline {
               values 'SMX', 'LOGIN', 'GUI'
             }
           }
-          stages {
+          node {
             def app
             stage("Build"){
               steps {
