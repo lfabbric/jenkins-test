@@ -155,7 +155,7 @@ pipeline {
         */
         matrix {
           environment {
-            FOO = "bar"
+            def FOO
           }
           axes {
             axis {
@@ -163,17 +163,10 @@ pipeline {
               values 'SMX', 'LOGIN', 'GUI'
             }
           }
-          // Fails
-          // script {
-          //   def app
-          // }
           stages {
-            // Cant put script here
-            // script {
-            //   def app
-            // }
             stage("Build"){
               steps {
+                env.FOO = "bar2"
                 echo "Build ${DOCKERNAME} Docker Container"
                 echo "${env.FOO}"
               }
