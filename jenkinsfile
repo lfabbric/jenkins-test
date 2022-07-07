@@ -156,7 +156,7 @@ pipeline {
                 script {
                   // jslMavenWrapper('-s ./settings.xml -X clean install')
                   sh "pwd"
-                  dir (${PROJECT}/${APP}) {
+                  dir ("${PROJECT}/${APP}") {
                     sh "pwd"
                   }
                   sh "pwd"
