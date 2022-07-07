@@ -29,7 +29,7 @@ pipeline {
     GITHUB_TOKEN_CREDENTIALS = ''
     GITHUB_SSH_CREDENTIALS = ''
     DOCKER_CREDENTIALS = ''
-    KUBE_CREDENTIALS = ''
+    KUBE_CREDENTIALS = 'OMGMEAT_KUBERNETES_CRED'
     KUBE_CREDENTIALS_TEST = ''
     AMAZON_CREDENTIALS = ''
     SONARQUBE_CREDENTIALS = ''
@@ -55,7 +55,7 @@ pipeline {
 
     }*/
     parameters {
-        booleanParam(name: "isBuildDockerContainers", defaultValue: false)
+        booleanParam(name: "buildDockerContainers", defaultValue: false)
         choice(name: 'DOCKERNAME_FILTER', choices: ['all', 'SMX', 'LOGIN', 'GUI'], description: 'Build specific containers')
     }
 
@@ -69,9 +69,6 @@ pipeline {
     agent any
 
     options {
-      /*
-      https://www.jenkins.io/doc/book/pipeline/syntax/#options
-      */
       timestamps ()
       timeout(time: 1, unit: 'HOURS')
       buildDiscarder(logRotator(numToKeepStr:'10', daysToKeepStr: '30'))
@@ -116,7 +113,7 @@ pipeline {
         }
       }
 
-      stage('Compile') {
+      stage('App Pipeline') {
         matrix {
           axes {
             axis {
@@ -176,31 +173,9 @@ pipeline {
         }
       }
 
-      stage('Upload') {
-        steps {
-          script {
-            echo 'Upload to Nexus'
-          }
-        }
-      }
-
-        // keep in mind, I think when we deploy, we want to put the project version number
-        /*
-          def app
-          app = docker.build("releaseworks/hellonode")
-          app.inside {
-            sh 'echo "Tests passed"'
-          }
-
-          docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
-          }
-        */
-
       stage('Build Docker Images') {
         when {
-          expression { params.isBuildDockerContainers }
+          expression { params.buildDockerContainers }
         }
         matrix {
           when { anyOf {
@@ -217,12 +192,14 @@ pipeline {
             stage("Build"){
               steps {
                 script {
+                  dir ('dockerfiles/${DOCKERNAME}') {
+                    // jslDirectBuildAndPushToNexus('Dockerfile', env.IMAGE_TAG, 'server', 'soar/threatnix')
+                    sh 'pwd'
+                  }
                   matrixSetup.put("${DOCKERNAME}", "TEST_SET_${DOCKERNAME}")
                   def container = docker.build("test-image", "./dockerfiles/${DOCKERNAME}")
                   matrixSetup.put("${DOCKERNAME}_container", container)
                 }
-                echo "Build ${DOCKERNAME} Docker Container"
-                echo "MatrixSetup Variable: " + matrixSetup.get("${DOCKERNAME}")
               }
             }
             stage("Test"){
@@ -248,76 +225,32 @@ pipeline {
         }
       }
 
-      // stage('Test') {
-      //   stages {
-
-      //     stage('Unit Tests') {
-      //       agent {
-      //         dockerfile {
-      //           /* Insert your code here */
-      //         }
-      //       }
-      //       steps {
-      //         script {
-      //           /* Insert your code here */
-      //           echo 'Unit Tests'
-      //         }
-      //       }
-      //     }
-
-      //     stage('Coverage'){
-      //       agent {
-      //         dockerfile {
-      //           /* Insert your code here */
-      //         }
-      //       }
-      //       steps {
-      //         script {
-      //           /* Contract Validation Gate */
-      //           echo 'jslQualityGateCodeCoverage(./cicd/docker/SonarQube/sonar-project.properties)'
-      //         }
-      //       }
-      //     }
-
-      //     stage('Sonarqube'){
-      //       agent {
-      //         dockerfile {
-      //           /* Insert your code here */
-      //         }
-      //       }
-      //       steps {
-      //         script {
-      //           /* Insert your code here */
-
-      //           /* Contract Validation Gate */
-      //           // jslSonarQubeStaticAnalysis('./cicd/docker/SonarQube/sonar-project.properties', env.SONARQUBE_CREDENTIALS)
-      //           echo 'jslSonarQubeStaticAnaylysis()'
-      //         }
-      //       }
-      //     }
-      //     stage('Quality Gate'){
-      //       agent {
-      //         dockerfile {
-      //           /* Insert your code here */
-      //         }
-      //       }
-      //       steps {
-      //         script {
-      //           /* Contract Validation Gate */
-      //           echo 'jslQualityGate()'
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
-
-      stage('Deploy') {
-        steps {
-          script {
-            /* Insert your code here */
-            echo 'Deploy script'
+      stage('Kubernetes') {
+        matrix {
+          when { anyOf {
+            expression { params.DOCKERNAME_FILTER == 'all' }
+            expression { params.DOCKERNAME_FILTER == env.DOCKERNAME }
+          }}
+          axes {
+            axis {
+              name 'KUBERNETESNAME'
+              values 'SMX', 'LOGIN', 'GUI'
+            }
           }
-          echo 'Deploy'
+          stages {
+            stage("Deploy"){
+              steps {
+                script {
+                  dir ('dockerfiles/${KUBERNETESNAME}') {
+                    sh 'pwd'
+                    // going to use mainifest.yaml
+                    // jslDeployK8s(my_manifest)
+                  }
+                }
+                echo "Deploy ${KUBERNETESNAME} Kubernetes"
+              }
+            }
+          }
         }
       }
 
