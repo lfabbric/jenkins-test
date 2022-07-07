@@ -14,3 +14,5 @@ docker container run -d \
 
 # install docker insdie
 curl https://get.docker.com/ > dockerinstall && chmod 777 dockerinstall && ./dockerinstall
+
+apt-get install maven

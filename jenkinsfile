@@ -22,6 +22,7 @@
 //     )
 //   ) _
 // }
+def matrixSetup = [:]
 
 pipeline {
   environment {
@@ -174,23 +175,31 @@ pipeline {
             stage("Build"){
               steps {
                 script {
-                  FOO = "TEST_SET_${DOCKERNAME}"
-                  def testImage = docker.build("test-image", "./dockerfiles/${DOCKERNAME}")
+                  matrixSetup.put("${DOCKERNAME}", "TEST_SET_${DOCKERNAME}")
+                  def container = docker.build("test-image", "./dockerfiles/${DOCKERNAME}")
+                  matrixSetup.put("${DOCKERNAME}_container", container)
                 }
                 echo "Build ${DOCKERNAME} Docker Container"
-                echo "${FOO}"
+                echo "MatrixSetup Variable: " + matrixSetup.get("${DOCKERNAME}")
               }
             }
             stage("Test"){
               steps {
+                script {
+                  def container = matrixSetup.get("${DOCKERNAME}_container")
+                  container.inside {
+                    sh 'echo "Tests passed"'
+                  }
+                  sh 'docker ps -a'
+                }
                 echo "Testing ${DOCKERNAME} Docker Container"
-                echo "${FOO}"
+                echo "MatrixSetup Variable: " + matrixSetup.get("${DOCKERNAME}")
               }
             }
             stage("Deploy"){
               steps {
                 echo "Deploying ${DOCKERNAME} Docker Container"
-                echo "${FOO}"
+                echo "MatrixSetup Variable: " + matrixSetup.get("${DOCKERNAME}")
               }
             }
           }
