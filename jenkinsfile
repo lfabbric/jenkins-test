@@ -154,13 +154,10 @@ pipeline {
             stage("Build"){
               steps {
                 script {
-                  // jslMavenWrapper('-s ./settings.xml -X clean install')
-                  sh "pwd"
                   dir ("${PROJECT}/${APP}") {
-                    sh "pwd"
+                    // jslMavenWrapper('-s ./settings.xml -X clean install')
+                    sh 'mvn clean install'
                   }
-                  sh "pwd"
-                  // sh 'mvn clean -f '
                 }
                 echo "Build ${PROJECT} ${APP} Docker Container"
               }
