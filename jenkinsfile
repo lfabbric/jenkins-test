@@ -117,16 +117,55 @@ pipeline {
       }
 
       stage('Compile') {
-        // agent {
-        //   dockerfile {
-        //         /* Insert your code here */
-        //   }
-        // }
-        steps {
-          script {
-            /* Insert your code here */
-            /* jslMavenWrapper('-s ./settings.xml -X clean install') */
-            echo 'Compile'
+        matrix {
+          axes {
+            axis {
+              name 'PROJECT'
+              values 'SMX', 'GUI'
+            }
+            axis {
+              name 'APP'
+              values 'OMGMEAT_GUI', 'OMGREPORTS_GUI', 'OMG_SHARED', 'OMGMEAT_SMX'
+            }
+          }
+          excludes {
+            exclude {
+              axis {
+                name 'PROJECT'
+                values 'SMX'
+              }
+              axis {
+                name 'APP'
+                values 'OMGMEAT_GUI', 'OMGREPORTS_GUI'
+              }
+            }
+            exclude {
+              axis {
+                name 'PROJECT'
+                values 'GUI'
+              }
+              axis {
+                name 'APP'
+                values 'OMG_SHARED', 'OMGMEAT_SMX'
+              }
+            }
+          }
+          stages {
+            stage("Build"){
+              steps {
+                echo "Build ${PROJECT} ${APP} Docker Container"
+              }
+            }
+            stage("Test"){
+              steps {
+                echo "Build ${PROJECT} ${APP} Docker Container"
+              }
+            }
+            stage("Upload"){
+              steps {
+                echo "Build ${PROJECT} ${APP} Docker Container"
+              }
+            }
           }
         }
       }
@@ -167,9 +206,6 @@ pipeline {
               name 'DOCKERNAME'
               values 'SMX', 'LOGIN', 'GUI'
             }
-          }
-          environment {
-            FOO = ""
           }
           stages {
             stage("Build"){
