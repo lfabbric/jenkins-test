@@ -149,6 +149,13 @@ pipeline {
           }
           stages {
             stage("Build"){
+              agent {
+                dockerfile {
+                  filename 'Dockerfile'
+                  dir 'cicd/docker/mvn'
+                  label 'Docker-enabled'
+                }
+              }
               steps {
                 script {
                   dir ("${PROJECT}/${APP}") {
