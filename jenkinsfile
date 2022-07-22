@@ -66,8 +66,10 @@ pipeline {
     // agent {
     //   label 'Docker-enabled'
     // }
-    agent any
-
+    agent {
+      label 'Docker-enabled'
+    }
+    tools { maven "maven-3.5.2"} 
     options {
       timestamps ()
       timeout(time: 1, unit: 'HOURS')
