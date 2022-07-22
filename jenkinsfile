@@ -151,13 +151,14 @@ pipeline {
           }
           stages {
             stage("Build"){
-              agent {
-                dockerfile {
-                  filename 'Dockerfile'
-                  dir 'cicd/docker/mvn'
-                  label 'Docker-enabled'
-                }
-              }
+              // keep for when you move over
+              // agent {
+              //   dockerfile {
+              //     filename 'Dockerfile'
+              //     dir 'cicd/docker/mvn'
+              //     label 'Docker-enabled'
+              //   }
+              // }
               steps {
                 script {
                   dir ("${PROJECT}/${APP}") {
@@ -281,42 +282,3 @@ pipeline {
       }
     }
 }
-
-
-// pipeline {
-//     agent any 
-//     stages {
-//         stage('Stage 1') {
-//             steps {
-//                 echo 'Hello world!' 
-//                 echo env.BRANCH_NAME
-//                 script {
-//                     if (env.BRANCH_NAME == 'main') {
-//                         echo 'I only execute on the master branch'
-//                     } else {
-//                         echo 'I execute elsewhere'
-//                     }
-//                 }
-//             }
-//         }
-//         stage('Meh Another stage') {
-//             steps {
-//                 echo 'Another step'
-//             }
-//         }
-//         stage('Maven step') {
-//             // agent { docker 'maven:3.8.1-adoptopenjdk-11' }
-//             steps {
-//                 echo 'Hello Maven'
-//                 // sh 'mvn --version'
-//             }
-//         }
-//         stage("One"){
-//             steps {
-//                 sleep 10
-//                 echo 'hello'
-//             }
-//         }
-        
-//     }
-// }
